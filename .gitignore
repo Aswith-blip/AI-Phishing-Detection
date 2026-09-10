@@ -8,3 +8,17 @@ instance/
 
 dataset/phiusiil_original.csv
 model/phishing_ensemble.pkl
+
+model/phishing_ensemble.pkl
+model/ensemble_info.pkl
+model/feature_ablation_results.csv
+model/hybrid_info.pkl
+model/hybrid_scaler.pkl
+model/hybrid_tfidf_vectorizer.pkl
+model/model_comparison.csv
+model/model_info.pkl
+model/phishing_hybrid_model.pkl
+model/phishing_model.pkl
+model/phishing_transformer.keras
+model/transformer_info.pkl
+model/transformer_tokenizer.pkl
