@@ -1,0 +1,476 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Phishing Detection System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+<body>
+
+    <!-- Navigation -->
+
+    <nav class="navbar">
+
+        <div class="brand">
+            ðŸ›¡ï¸ AI Phishing Detector
+        </div>
+
+        <div class="nav-status">
+            <span class="status-dot"></span>
+            AI Engine Online
+        </div>
+
+    </nav>
+
+
+    <!-- Main -->
+
+    <main class="main-container">
+
+        <!-- Hero -->
+
+        <section class="hero">
+
+            <div class="hero-badge">
+                MACHINE LEARNING CYBERSECURITY
+            </div>
+
+            <h1>
+                Detect Phishing Websites
+                <span>Before You Click</span>
+            </h1>
+
+            <p>
+                Analyze suspicious URLs using machine learning
+                and advanced URL security features.
+            </p>
+
+        </section>
+
+
+        <!-- Scanner -->
+
+        <section class="scanner-card">
+
+            <div class="scanner-header">
+
+                <div>
+                    <h2>ðŸ” Website Security Scanner</h2>
+
+                    <p>
+                        Enter a URL to analyze its phishing risk.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <form
+                action="/predict"
+                method="POST"
+                class="scan-form"
+            >
+
+                <div class="url-input-wrapper">
+
+                    <span class="input-icon">ðŸ”—</span>
+
+                    <input
+                        type="text"
+                        name="url"
+                        placeholder="https://example.com"
+                        value="{{ url if url else '' }}"
+                        autocomplete="off"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="scan-button"
+                >
+                    <span>ðŸ”</span>
+                    Analyze URL
+                </button>
+
+            </form>
+
+
+            {% if error %}
+
+            <div class="error-message">
+                âš ï¸ {{ error }}
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        {% if result %}
+
+        <!-- Result -->
+
+        <section class="result-card {{ result_type }}">
+
+            <div class="result-header">
+
+                <div>
+
+                    {% if result_type == "danger" %}
+
+                    <div class="result-icon danger-icon">
+                        âš ï¸
+                    </div>
+
+                    {% else %}
+
+                    <div class="result-icon safe-icon">
+                        âœ“
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div>
+
+                    <p class="result-label">
+                        ANALYSIS RESULT
+                    </p>
+
+                    <h2>
+                        {{ result }}
+
+                    </h2>
+
+                    <p class="scanned-url">
+                        {{ url }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Metrics -->
+
+            <div class="metrics-grid">
+
+                <div class="metric-card">
+
+                    <div class="metric-title">
+                        Risk Score
+                    </div>
+
+                    <div class="metric-value">
+                        {{ risk_score }}
+                        <small>/ 100</small>
+                    </div>
+
+                </div>
+
+
+                <div class="metric-card">
+
+                    <div class="metric-title">
+                        Phishing Probability
+                    </div>
+
+                    <div class="metric-value">
+                        {{ probability }}%
+                    </div>
+
+                </div>
+
+
+                <div class="metric-card">
+
+                    <div class="metric-title">
+                        Risk Level
+                    </div>
+
+                    <div class="metric-risk">
+                        {{ risk_level }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Risk Bar -->
+
+            <div class="risk-section">
+
+                <div class="risk-header">
+
+                    <span>Security Risk</span>
+
+                    <strong>
+                        {{ risk_score }}/100
+                    </strong>
+
+                </div>
+
+                <div class="risk-bar">
+
+                    <div
+                        class="risk-progress"
+                        style="width: {{ risk_score }}%;"
+                    ></div>
+
+                </div>
+
+                <div class="risk-scale">
+
+                    <span>LOW</span>
+                    <span>MEDIUM</span>
+                    <span>HIGH</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Reasons -->
+
+            <div class="reasons-section">
+
+                <h3>
+                    ðŸ”Ž Detection Analysis
+                </h3>
+
+                <p class="section-description">
+                    Security indicators identified during URL analysis.
+                </p>
+
+
+                <div class="reason-list">
+
+                    {% for reason in reasons %}
+
+                    <div class="reason-item">
+
+                        <span class="reason-icon">
+                            âš 
+                        </span>
+
+                        <span>
+                            {{ reason }}
+                        </span>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- System Statistics -->
+
+        <section class="stats-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        ðŸ¤– Detection Engine
+                    </h2>
+
+                    <p>
+                        Machine learning model information
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <span class="stat-icon">
+                        ðŸ§ 
+                    </span>
+
+                    <div>
+
+                        <span class="stat-label">
+                            ML Model
+                        </span>
+
+                        <strong>
+                            {{ model_name }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-icon">
+                        ðŸŽ¯
+                    </span>
+
+                    <div>
+
+                        <span class="stat-label">
+                            Test Accuracy
+                        </span>
+
+                        <strong>
+                            {{ accuracy }}%
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-icon">
+                        âš™ï¸
+                    </span>
+
+                    <div>
+
+                        <span class="stat-label">
+                            Features Analyzed
+                        </span>
+
+                        <strong>
+                            {{ features }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Security Features -->
+
+        <section class="features-section">
+
+            <h2>
+                ðŸ” What We Analyze
+            </h2>
+
+            <div class="feature-grid">
+
+                <div class="feature-box">
+
+                    <span>ðŸŒ</span>
+
+                    <h3>
+                        URL Structure
+                    </h3>
+
+                    <p>
+                        Length, characters, domains,
+                        subdomains and URL depth.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-box">
+
+                    <span>ðŸ”’</span>
+
+                    <h3>
+                        Security
+                    </h3>
+
+                    <p>
+                        HTTPS, IP addresses,
+                        obfuscation and suspicious patterns.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-box">
+
+                    <span>ðŸ§ </span>
+
+                    <h3>
+                        AI Analysis
+                    </h3>
+
+                    <p>
+                        Machine learning analyzes
+                        multiple URL characteristics.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-box">
+
+                    <span>âš ï¸</span>
+
+                    <h3>
+                        Risk Detection
+                    </h3>
+
+                    <p>
+                        Generates phishing probability
+                        and an easy-to-understand risk score.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- Footer -->
+
+    <footer>
+
+        <p>
+            ðŸ›¡ï¸ AI-Powered Phishing Website Detection System
+        </p>
+
+        <p class="footer-small">
+            Machine Learning â€¢ Cybersecurity â€¢ URL Analysis
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>
+
+

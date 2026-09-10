@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Security Analytics Dashboard</title>
+
+    <link rel="icon"
+          type="image/svg+xml"
+          href="{{ url_for('static', filename='favicon.svg') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="nav-logo">
+        🛡️ AI Phishing Detector
+    </div>
+
+    <div class="nav-links">
+        <a href="/">
+            🔍 Scanner
+        </a>
+
+        <a href="/history" class="active">
+            📊 Dashboard
+        </a>
+    </div>
+
+</nav>
+
+
+<main class="dashboard-container">
+
+    <!-- HEADER -->
+
+    <section class="dashboard-header">
+
+        <div>
+            <p class="dashboard-label">SECURITY ANALYTICS</p>
+
+            <h1>Phishing Detection Dashboard</h1>
+
+            <p>
+                Monitor URL scans, detection results and security risk levels.
+            </p>
+        </div>
+
+        <a href="/" class="scan-button">
+            + Scan New URL
+        </a>
+
+    </section>
+
+
+    <!-- MODEL CARD -->
+
+    <section class="model-card">
+
+        <div class="model-icon">
+            🤖
+        </div>
+
+        <div class="model-details">
+
+            <span class="small-label">
+                ACTIVE AI MODEL
+            </span>
+
+            <h2>
+                {{ model_name }}
+            </h2>
+
+            <p>
+                Character-level deep learning model for phishing URL detection
+            </p>
+
+        </div>
+
+        <div class="model-status">
+            <span class="status-dot"></span>
+            Model Active
+        </div>
+
+    </section>
+
+
+    <!-- STATISTICS -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🔎
+            </div>
+
+            <div>
+                <span class="stat-label">
+                    TOTAL SCANS
+                </span>
+
+                <h2>
+                    {{ statistics.total }}
+                </h2>
+
+                <p>
+                    URLs analyzed
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card danger">
+
+            <div class="stat-icon">
+                🚨
+            </div>
+
+            <div>
+                <span class="stat-label">
+                    PHISHING DETECTED
+                </span>
+
+                <h2>
+                    {{ statistics.phishing }}
+                </h2>
+
+                <p>
+                    Threats detected
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card safe">
+
+            <div class="stat-icon">
+                🛡️
+            </div>
+
+            <div>
+                <span class="stat-label">
+                    LEGITIMATE
+                </span>
+
+                <h2>
+                    {{ statistics.legitimate }}
+                </h2>
+
+                <p>
+                    Safe URLs detected
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card warning">
+
+            <div class="stat-icon">
+                📈
+            </div>
+
+            <div>
+                <span class="stat-label">
+                    PHISHING RATE
+                </span>
+
+                <h2>
+                    {{ statistics.phishing_percentage }}%
+                </h2>
+
+                <p>
+                    Of total scans
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CHARTS -->
+
+    <section class="charts-grid">
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <div>
+                    <h3>Detection Distribution</h3>
+
+                    <p>
+                        Phishing versus legitimate URLs
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="chart-wrapper">
+                <canvas id="detectionChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <div>
+                    <h3>Risk Distribution</h3>
+
+                    <p>
+                        Security risk classification
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="chart-wrapper">
+                <canvas id="riskChart"></canvas>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- SECURITY SUMMARY -->
+
+    <section class="security-summary">
+
+        <div class="summary-title">
+
+            <div>
+                <span class="dashboard-label">
+                    SECURITY STATUS
+                </span>
+
+                <h2>
+                    Current Detection Summary
+                </h2>
+            </div>
+
+            <div class="shield-large">
+                🛡️
+            </div>
+
+        </div>
+
+
+        <div class="summary-grid">
+
+            <div class="summary-item">
+
+                <span>
+                    HIGH RISK
+                </span>
+
+                <strong>
+                    {{ statistics.high_risk }}
+                </strong>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <span>
+                    MEDIUM RISK
+                </span>
+
+                <strong>
+                    {{ statistics.medium_risk }}
+                </strong>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <span>
+                    LOW RISK
+                </span>
+
+                <strong>
+                    {{ statistics.low_risk }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RECENT SCANS -->
+
+    <section class="table-card">
+
+        <div class="table-header">
+
+            <div>
+
+                <span class="dashboard-label">
+                    ACTIVITY
+                </span>
+
+                <h2>
+                    Recent URL Scans
+                </h2>
+
+            </div>
+
+            <a href="/" class="secondary-button">
+                Scan URL
+            </a>
+
+        </div>
+
+
+        {% if scans %}
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>URL</th>
+
+                        <th>Prediction</th>
+
+                        <th>Phishing Probability</th>
+
+                        <th>Risk Score</th>
+
+                        <th>Risk Level</th>
+
+                        <th>Scanned At</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for scan in scans %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+                        <td class="url-cell">
+                            {{ scan.url }}
+                        </td>
+
+                        <td>
+
+                            {% if scan.prediction == "PHISHING WEBSITE" %}
+
+                                <span class="badge phishing">
+                                    🚨 PHISHING
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge legitimate">
+                                    🛡️ LEGITIMATE
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="probability">
+
+                                <div class="probability-bar">
+
+                                    <div
+                                        class="probability-fill"
+                                        style="width: {{ scan.phishing_probability }}%;">
+                                    </div>
+
+                                </div>
+
+                                <span>
+                                    {{ scan.phishing_probability }}%
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+                            {{ scan.risk_score }}
+                        </td>
+
+
+                        <td>
+
+                            {% if scan.risk_level == "HIGH RISK" %}
+
+                                <span class="badge high">
+                                    HIGH
+                                </span>
+
+                            {% elif scan.risk_level == "MEDIUM RISK" %}
+
+                                <span class="badge medium">
+                                    MEDIUM
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge low">
+                                    LOW
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+                            {{ scan.scanned_at }}
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <div>
+                📭
+            </div>
+
+            <h3>
+                No scans yet
+            </h3>
+
+            <p>
+                Scan a URL to start building your security analytics.
+            </p>
+
+            <a href="/">
+                Start Scanning
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer class="dashboard-footer">
+
+        <p>
+            🛡️ AI-Powered Phishing Website Detection System
+        </p>
+
+        <p>
+            Machine Learning • Deep Learning • URL Security Analytics
+        </p>
+
+    </footer>
+
+</main>
+
+
+<script>
+
+const detectionCtx =
+    document.getElementById("detectionChart");
+
+new Chart(detectionCtx, {
+
+    type: "doughnut",
+
+    data: {
+
+        labels: [
+            "Phishing",
+            "Legitimate"
+        ],
+
+        datasets: [{
+
+            data: [
+                {{ statistics.phishing }},
+                {{ statistics.legitimate }}
+            ],
+
+            backgroundColor: [
+                "#ef4444",
+                "#22c55e"
+            ],
+
+            borderWidth: 0
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        cutout: "70%",
+
+        plugins: {
+
+            legend: {
+
+                position: "bottom",
+
+                labels: {
+                    padding: 20
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+
+const riskCtx =
+    document.getElementById("riskChart");
+
+new Chart(riskCtx, {
+
+    type: "bar",
+
+    data: {
+
+        labels: [
+            "High Risk",
+            "Medium Risk",
+            "Low Risk"
+        ],
+
+        datasets: [{
+
+            label: "Number of Scans",
+
+            data: [
+                {{ statistics.high_risk }},
+                {{ statistics.medium_risk }},
+                {{ statistics.low_risk }}
+            ],
+
+            backgroundColor: [
+                "#ef4444",
+                "#f59e0b",
+                "#22c55e"
+            ],
+
+            borderRadius: 8
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+            legend: {
+                display: false
+            }
+
+        },
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true,
+
+                ticks: {
+                    precision: 0
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

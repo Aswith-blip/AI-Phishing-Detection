@@ -1,0 +1,10 @@
+﻿<div class="confidence-card">
+    <div class="confidence-icon">🧠</div>
+    <div class="confidence-content">
+        <span class="confidence-label">AI CONFIDENCE</span>
+        <strong class="confidence-value">{{ confidence }}</strong>
+        <span class="confidence-description">
+            Character-Level CNN prediction confidence
+        </span>
+    </div>
+</div>

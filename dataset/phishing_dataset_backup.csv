@@ -1,0 +1,16 @@
+URL,Label
+https://www.google.com,Legitimate
+https://www.microsoft.com,Legitimate
+https://www.github.com,Legitimate
+https://www.wikipedia.org,Legitimate
+https://www.amazon.com,Legitimate
+https://www.apple.com,Legitimate
+https://www.youtube.com,Legitimate
+https://www.linkedin.com,Legitimate
+http://192.168.1.10/login,Phishing
+http://192.168.10.20/verify,Phishing
+http://secure-login-example.com/login,Phishing
+http://account-update-example.com/verify,Phishing
+http://paypal-security-example.com/login,Phishing
+http://verify-account-example.com/password,Phishing
+http://bank-login-example.com/confirm,Phishing
