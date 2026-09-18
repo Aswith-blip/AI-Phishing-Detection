@@ -1,16 +1,23 @@
+﻿from flask import Flask, render_template, request, jsonify
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask import Flask, render_template, request
+
 from cnn_predictor import predict_url
 from feature_extraction import extract_features
 from risk_analysis import calculate_risk, get_detection_reasons
 from database import save_scan, get_recent_scans, get_statistics
 from url_validator import validate_url
+
 import joblib
 import os
 
-
 app = Flask(__name__)
+
+limiter = Limiter(
+    key_func=get_remote_address,
+    app=app,
+    default_limits=[]
+)
 
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024
 app.config["SESSION_COOKIE_HTTPONLY"] = True
@@ -22,6 +29,7 @@ def add_security_headers(response):
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "SAMEORIGIN"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
         "script-src 'self' https://cdn.jsdelivr.net; "
@@ -33,6 +41,7 @@ def add_security_headers(response):
         "base-uri 'self'; "
         "form-action 'self';"
     )
+
     return response
 
 
@@ -42,7 +51,6 @@ try:
     model_info = joblib.load(MODEL_INFO_PATH)
 except Exception:
     model_info = {}
-
 
 MODEL_NAME = model_info.get(
     "model_name",
@@ -67,7 +75,10 @@ def home():
 @app.route("/predict", methods=["POST"])
 def predict():
 
-    url = request.form.get("url", "").strip()
+    url = request.form.get(
+        "url",
+        ""
+    ).strip()
 
     valid, cleaned_url, error = validate_url(url)
 
@@ -83,15 +94,14 @@ def predict():
     url = cleaned_url
 
     try:
+
         result = predict_url(url)
 
         features = extract_features(url)
 
-        phishing_probability = result["phishing_probability"]
-
         risk_score, risk_level = calculate_risk(
             features,
-            phishing_probability
+            result["phishing_probability"]
         )
 
         reasons = get_detection_reasons(features)
@@ -111,7 +121,6 @@ def predict():
             result=result["result"],
             result_type=result["result_type"],
             confidence=result["confidence"],
-            confidence_probability=result["confidence_probability"],
             probability=result["phishing_probability"],
             risk_score=risk_score,
             risk_level=risk_level,
@@ -122,7 +131,11 @@ def predict():
         )
 
     except Exception as e:
-        print("PREDICTION ERROR:", repr(e))
+
+        print(
+            "PREDICTION ERROR:",
+            repr(e)
+        )
 
         return render_template(
             "index.html",
@@ -131,6 +144,67 @@ def predict():
             model_name=MODEL_NAME,
             accuracy=round(ACCURACY * 100, 2)
         )
+
+
+@app.route("/api/predict", methods=["POST"])
+@limiter.limit("30 per minute")
+def api_predict():
+
+    data = request.get_json(silent=True)
+
+    if not data or "url" not in data:
+        return jsonify({
+            "error": "URL is required"
+        }), 400
+
+    raw_url = str(data["url"]).strip()
+
+    valid, cleaned_url, error = validate_url(raw_url)
+
+    if not valid:
+        return jsonify({
+            "error": error
+        }), 400
+
+    url = cleaned_url
+
+    try:
+
+        result = predict_url(url)
+
+        features = extract_features(url)
+
+        risk_score, risk_level = calculate_risk(
+            features,
+            result["phishing_probability"]
+        )
+
+        reasons = get_detection_reasons(features)
+
+        return jsonify({
+            "prediction": result["prediction"],
+            "result": result["result"],
+            "result_type": result["result_type"],
+            "phishing_probability": result["phishing_probability"],
+            "legitimate_probability": result["legitimate_probability"],
+            "confidence": result["confidence"],
+            "confidence_probability": result["confidence_probability"],
+            "risk_score": risk_score,
+            "risk_level": risk_level,
+            "reasons": reasons
+        })
+
+    except Exception:
+
+        app.logger.exception(
+            "API prediction error"
+        )
+
+        return jsonify({
+            "error": "Prediction failed"
+        }), 500
+
+
 @app.route("/history")
 def history():
 
@@ -147,14 +221,20 @@ def history():
     )
 
 
-import os
-from waitress import serve
-
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    serve(app, host="0.0.0.0", port=port)
 
+    print("AI Phishing Detection System")
+    print(f"Model: {MODEL_NAME}")
+    print(
+        f"Model Accuracy: {round(ACCURACY * 100, 2)}%"
+    )
+    print(
+        "Running on http://127.0.0.1:5000"
+    )
 
-
-
-
+    app.run(
+        host="127.0.0.1",
+        port=5000,
+        debug=False,
+        use_reloader=False
+    )

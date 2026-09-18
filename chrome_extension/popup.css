@@ -1,0 +1,190 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    width: 380px;
+    min-height: 500px;
+    background: #0F172A;
+    color: #F8FAFC;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    padding: 18px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.logo {
+    font-size: 32px;
+}
+
+h1 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.header p {
+    color: #94A3B8;
+    font-size: 12px;
+    margin: 4px 0 0;
+}
+
+.url-box {
+    background: #172033;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    margin-bottom: 12px;
+}
+
+#url {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+button {
+    width: 100%;
+    border: 0;
+    border-radius: 8px;
+    padding: 12px;
+    background: #3B82F6;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #2563EB;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#loading {
+    text-align: center;
+    padding: 20px;
+    color: #94A3B8;
+}
+
+#result {
+    margin-top: 15px;
+}
+
+#resultStatus {
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: bold;
+    background: #172033;
+    margin-bottom: 12px;
+}
+
+.safe {
+    color: #22C55E;
+}
+
+.danger {
+    color: #EF4444;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.stat {
+    background: #172033;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.stat span {
+    display: block;
+    color: #94A3B8;
+    font-size: 11px;
+    margin-bottom: 5px;
+}
+
+.stat strong {
+    font-size: 14px;
+}
+
+.risk {
+    margin-top: 12px;
+    background: #172033;
+    border: 1px solid #334155;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.risk-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.risk-bar {
+    height: 8px;
+    background: #334155;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#riskProgress {
+    height: 100%;
+    width: 0%;
+    background: #EF4444;
+    transition: width 0.4s ease;
+}
+
+.reasons {
+    margin-top: 12px;
+    background: #172033;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.reasons h3 {
+    font-size: 14px;
+    margin-top: 0;
+}
+
+.reasons li {
+    color: #CBD5E1;
+    font-size: 12px;
+    margin: 7px 0;
+}
+
+.error {
+    margin-top: 12px;
+    background: #450A0A;
+    border: 1px solid #EF4444;
+    color: #FCA5A5;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+footer {
+    text-align: center;
+    color: #64748B;
+    font-size: 10px;
+    margin-top: 18px;
+}

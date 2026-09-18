@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Phishing Detector</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <div class="logo">🛡️</div>
+            <div>
+                <h1>AI Phishing Detector</h1>
+                <p>Website Security Scanner</p>
+            </div>
+        </div>
+
+        <div class="url-box">
+            <span>🌐</span>
+            <span id="url">Checking current website...</span>
+        </div>
+
+        <button id="scanButton">
+            🔍 Scan Website
+        </button>
+
+        <div id="loading" class="hidden">
+            🤖 AI is analyzing the website...
+        </div>
+
+        <div id="result" class="hidden">
+
+            <div id="resultStatus"></div>
+
+            <div class="stats">
+
+                <div class="stat">
+                    <span>Phishing</span>
+                    <strong id="phishingProbability">--</strong>
+                </div>
+
+                <div class="stat">
+                    <span>Legitimate</span>
+                    <strong id="legitimateProbability">--</strong>
+                </div>
+
+                <div class="stat">
+                    <span>Confidence</span>
+                    <strong id="confidence">--</strong>
+                </div>
+
+                <div class="stat">
+                    <span>Risk</span>
+                    <strong id="riskLevel">--</strong>
+                </div>
+
+            </div>
+
+            <div class="risk">
+                <div class="risk-header">
+                    <span>Risk Score</span>
+                    <strong id="riskScore">--</strong>
+                </div>
+
+                <div class="risk-bar">
+                    <div id="riskProgress"></div>
+                </div>
+            </div>
+
+            <div class="reasons">
+                <h3>🔍 Detection Analysis</h3>
+                <ul id="reasonsList"></ul>
+            </div>
+
+        </div>
+
+        <div id="error" class="error hidden"></div>
+
+        <footer>
+            Character-Level CNN
+        </footer>
+
+    </div>
+
+    <script src="popup.js"></script>
+
+</body>
+</html>
