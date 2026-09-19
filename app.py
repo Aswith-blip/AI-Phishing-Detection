@@ -5,7 +5,7 @@ from flask_limiter.util import get_remote_address
 from cnn_predictor import predict_url
 from feature_extraction import extract_features
 from risk_analysis import calculate_risk, get_detection_reasons
-from database import save_scan, get_recent_scans, get_statistics
+from database import init_database, save_scan, get_recent_scans, get_statistics
 from url_validator import validate_url
 
 import joblib
@@ -220,6 +220,7 @@ def history():
         accuracy=round(ACCURACY * 100, 2)
     )
 
+init_database()
 
 if __name__ == "__main__":
 
